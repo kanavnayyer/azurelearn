@@ -1,0 +1,15 @@
+{
+	"name": "kanavspotifyfactory",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "277f25bb-9028-4bcc-b4b3-b59ff45ad2fd",
+		"tenantId": "e4a4ff1a-5242-427a-9436-c08acc0460ba"
+	}
+}
