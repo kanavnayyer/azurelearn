@@ -98,8 +98,6 @@
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": false,
-							"wildcardFolderPath": "cdc",
-							"wildcardFileName": "*.json",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
@@ -111,7 +109,11 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "bronze",
-							"folder": "cdc"
+							"folder": {
+								"value": "@pipeline().parameters.cdc_folder",
+								"type": "Expression"
+							},
+							"file": "cdc.json"
 						}
 					},
 					"firstRowOnly": false
@@ -279,7 +281,10 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"container": "bronze",
-										"folder": "cdc",
+										"folder": {
+											"value": "@pipeline().parameters.cdc_folder",
+											"type": "Expression"
+										},
 										"file": "empty.json"
 									}
 								}
@@ -302,16 +307,23 @@
 		],
 		"parameters": {
 			"schema": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "dbo"
 			},
 			"table": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "DimArtist"
 			},
 			"cdc_col": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "updated_at"
 			},
 			"from_date": {
 				"type": "string"
+			},
+			"cdc_folder": {
+				"type": "string",
+				"defaultValue": "dim_artist_cdc"
 			}
 		},
 		"variables": {
