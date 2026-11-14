@@ -58,7 +58,7 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "Json1",
+						"referenceName": "parameterized",
 						"type": "DatasetReference"
 					}
 				}
