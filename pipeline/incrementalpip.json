@@ -31,7 +31,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "select * from @{pipeline().parameters.schema}.@{pipeline().parameters.table} where @{pipeline().parameters.cdc_col} > '@{activity('cdc look').output.value[0].cdc}'",
+							"value": "@concat(\n    'SELECT * FROM ',\n    pipeline().parameters.schema,\n    '.',\n    pipeline().parameters.table,\n    ' WHERE ',\n    pipeline().parameters.cdc_col,\n    ' > ''',\n    if(\n        empty(pipeline().parameters.from_date),\n        string(activity('cdc look').output.value[0].cdc),\n        pipeline().parameters.from_date\n    ),\n    ''''\n)",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -148,7 +148,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(activity('cdc look').output.dataRead,0)",
+						"value": "@greater(activity('copyinitiqal').output.dataRead, 0)",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -175,6 +175,12 @@
 											"type": "Expression"
 										},
 										"file": "@concat(pipeline().parameters.table,'_',variables('time'))"
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "writingone",
+										"type": "LinkedServiceReference"
 									}
 								},
 								"enableLogging": true,
@@ -303,6 +309,9 @@
 			},
 			"cdc_col": {
 				"type": "String"
+			},
+			"from_date": {
+				"type": "string"
 			}
 		},
 		"variables": {
