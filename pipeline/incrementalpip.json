@@ -61,7 +61,7 @@
 						"referenceName": "parameterized",
 						"type": "DatasetReference"
 					},
-					"firstRowOnly": true
+					"firstRowOnly": false
 				}
 			}
 		],
