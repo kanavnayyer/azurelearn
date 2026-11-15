@@ -66,7 +66,7 @@
 							}
 						},
 						{
-							"name": "Copy data",
+							"name": "copyinitiqal",
 							"type": "Copy",
 							"dependsOn": [
 								{
@@ -91,15 +91,64 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"enableStaging": false
-							}
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": "@concat(\n    'SELECT * FROM ',\n    item().schema,\n    '.',\n    item().table,\n    ' WHERE ',\n    item().cdc_col,\n    ' > ''',\n    if(\n        empty(item().from_date),\n        string(activity('cdc look').output.value[0].cdc),\n        item().from_date\n    ),\n    ''''\n)",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "AzureSqlTablesrcfeth",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "parquesink",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "bronze",
+											"type": "Expression"
+										},
+										"folder": {
+											"value": "@pipeline().parameters.cdc_folder",
+											"type": "Expression"
+										},
+										"file": {
+											"value": "@pipeline().parameters.table",
+											"type": "Expression"
+										}
+									}
+								}
+							]
 						},
 						{
 							"name": "If Condition",
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "Copy data",
+									"activity": "copyinitiqal",
 									"dependencyConditions": [
 										"Succeeded"
 									]
