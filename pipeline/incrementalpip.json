@@ -8,6 +8,11 @@
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.loop_input",
+						"type": "Expression"
+					},
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "cdc look",
@@ -183,7 +188,10 @@
 														"value": "@item().table",
 														"type": "Expression"
 													},
-													"file": "@concat(pipeline().parameters.table,'_',variables('time'))"
+													"file": {
+														"value": "@concat(item().table,'_',variables('time'))",
+														"type": "Expression"
+													}
 												}
 											},
 											"logStorageSettings": {
@@ -223,7 +231,7 @@
 												{
 													"type": "Query",
 													"text": {
-														"value": "\nSELECT MAX(@{pipeline().parameters.cdc_col}) AS cdc\nFROM @{pipeline().parameters.schema}.@{pipeline().parameters.table};",
+														"value": "SELECT MAX(@{item().cdc_col}) AS cdc\nFROM @{item().schema}.@{item().table};",
 														"type": "Expression"
 													}
 												}
