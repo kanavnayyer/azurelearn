@@ -39,7 +39,7 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@pipeline().parameters.cdc_folder",
+											"value": "@item().cdc_folder",
 											"type": "Expression"
 										},
 										"file": "cdc.json"
@@ -132,11 +132,11 @@
 											"type": "Expression"
 										},
 										"folder": {
-											"value": "@pipeline().parameters.cdc_folder",
+											"value": "@item().cdc_folder",
 											"type": "Expression"
 										},
 										"file": {
-											"value": "@pipeline().parameters.table",
+											"value": "@item().table",
 											"type": "Expression"
 										}
 									}
@@ -180,7 +180,7 @@
 												"parameters": {
 													"container": "bronze",
 													"folder": {
-														"value": "@pipeline().parameters.table",
+														"value": "@item().table",
 														"type": "Expression"
 													},
 													"file": "@concat(pipeline().parameters.table,'_',variables('time'))"
@@ -289,7 +289,7 @@
 												"parameters": {
 													"container": "bronze",
 													"folder": {
-														"value": "@pipeline().parameters.cdc_folder",
+														"value": "@item().cdc_folder",
 														"type": "Expression"
 													},
 													"file": "empty.json"
@@ -303,7 +303,7 @@
 												"parameters": {
 													"container": "bronze",
 													"folder": {
-														"value": "@pipeline().parameters.cdc_folder",
+														"value": "@item().cdc_folder",
 														"type": "Expression"
 													},
 													"file": "cdc.json"
@@ -319,24 +319,45 @@
 			}
 		],
 		"parameters": {
-			"schema": {
-				"type": "String",
-				"defaultValue": "dbo"
-			},
-			"table": {
-				"type": "String",
-				"defaultValue": "DimArtist"
-			},
-			"cdc_col": {
-				"type": "String",
-				"defaultValue": "updated_at"
-			},
-			"from_date": {
-				"type": "string"
-			},
-			"cdc_folder": {
-				"type": "string",
-				"defaultValue": "dim_artist_cdc"
+			"loop_input": {
+				"type": "array",
+				"defaultValue": [
+					{
+						"schema": "dbo",
+						"table": "DimUser",
+						"cdc_col": "updated_at",
+						"cdc_folder": "dim_user_cdc",
+						"from_date": ""
+					},
+					{
+						"schema": "dbo",
+						"table": "DimTrack",
+						"cdc_col": "updated_at",
+						"cdc_folder": "dim_track_cdc",
+						"from_date": ""
+					},
+					{
+						"schema": "dbo",
+						"table": "DimDate",
+						"cdc_col": "date",
+						"cdc_folder": "dim_date_cdc",
+						"from_date": ""
+					},
+					{
+						"schema": "dbo",
+						"table": "DimArtist",
+						"cdc_col": "updated_at",
+						"cdc_folder": "dim_artist_cdc",
+						"from_date": ""
+					},
+					{
+						"schema": "dbo",
+						"table": "FactStream",
+						"cdc_col": "stream_timestamp",
+						"cdc_folder": "fact_stream_cdc",
+						"from_date": ""
+					}
+				]
 			}
 		},
 		"variables": {
